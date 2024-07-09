@@ -17,7 +17,7 @@ This project is designed to detect enemies in Overwatch gameplay videos and calc
 1. Prepare your video
 
     Place your Overwatch gameplay video in the video directory.
-    Update the video_path variable in main.py to point to your video file.
+    Update the video_path variable in aim_check.py to point to your video file.
 
 2. **run**
    ```bash
