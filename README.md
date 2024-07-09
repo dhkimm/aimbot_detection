@@ -20,7 +20,8 @@ This project is designed to detect enemies in Overwatch gameplay videos and calc
     Update the video_path variable in main.py to point to your video file.
 
 2. Run the detection
-
+1. **run**
+   ```bash
     python aim_check.py
 
 The processed frames will be saved in the output_frames directory, and the video will be displayed with overlays showing detection results and suspicion scores.
