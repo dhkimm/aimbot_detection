@@ -13,14 +13,12 @@ class AimTracker:
         self.hit_accuracy = []
 
     def update(self, aim_x, aim_y, boxes):
-
         if self.previous_aim_x is not None and self.previous_aim_y is not None:
             distance = math.sqrt((aim_x - self.previous_aim_x) ** 2 + (aim_y - self.previous_aim_y) ** 2)
             self.aim_speeds.append(distance)
         
         self.previous_aim_x = aim_x
         self.previous_aim_y = aim_y
-
 
         if boxes:
             target_box = boxes[0]

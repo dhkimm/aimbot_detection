@@ -1,16 +1,22 @@
 import cv2
-from yolo5_detector import YoloV5Detector
-from aim_tracker import AimTracker
-from face_detector import FaceDetector
-import time
+import torch
 import os
+import time
+
+from face_detector import FaceDetector
+from aim_tracker import AimTracker
+from simple_cnn import SimpleCNN
+from custom_detector import CustomDetector
 
 
-yolo_detector = YoloV5Detector('yolov5s.pt')
+model = SimpleCNN()
 
+model.eval()
+
+custom_detector = CustomDetector(model)
 face_detector = FaceDetector()
 
-video_path = 'D:/works/code/AI/video/clip.mp4'
+video_path = 'D:/works/code/Aimbot_detection/video/clip.mp4'
 cap = cv2.VideoCapture(video_path)
 
 if not cap.isOpened():
@@ -18,7 +24,6 @@ if not cap.isOpened():
     exit()
 
 aim_tracker = AimTracker()
-
 enemy_detected_time = None
 
 output_dir = 'output_frames'
@@ -38,12 +43,21 @@ while cap.isOpened():
     frame = cv2.resize(frame, (resize_width, resize_height))
     height, width, _ = frame.shape
     
-    boxes = yolo_detector.detect(frame)
+    boxes = custom_detector.detect(frame)
     
     for box in boxes:
         x, y, w, h = box
         cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-        face_boxes = face_detector.detect(frame[y:y+h, x:x+w])
+        
+        # Ensure the region of interest is valid
+        if x < 0 or y < 0 or x + w > width or y + h > height:
+            continue
+
+        roi = frame[y:y+h, x:x+w]
+        if roi.size == 0:
+            continue
+
+        face_boxes = face_detector.detect(roi)
         for (fx, fy, fw, fh) in face_boxes:
             cv2.rectangle(frame, (x + fx, y + fy), (x + fx + fw, y + fy + fh), (255, 0, 0), 2)
     
